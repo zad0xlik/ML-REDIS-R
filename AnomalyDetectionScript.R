@@ -3,6 +3,8 @@ install.packages ("DBI")
 install.packages ("fda")
 install.packages("devtools")
 install.packages ("reshape", "chron")
+
+##fmk: need clarification on model that is being used
 devtools::install_github("twitter/AnomalyDetection")
 library(AnomalyDetection)
 library (RPostgreSQL)
@@ -11,6 +13,7 @@ library (reshape)
 library (chron)
 
 drv = dbDriver("PostgreSQL")
+##fmk: password needs to get hashed through another function
 con = dbConnect(drv, user = "ppei", password = "Ready2go", dbname = "QTRACK", host = "50.168.76.47", port = 5432)
 rs <- dbGetQuery (con, "select load_date || ' ' || load_time, call_implied_volatility from optionsnapshot where load_date='2015-01-16' order by cast(load_time as time)")
 rs <- dbGetQuery (con, "select load_date || ' ' || load_time, call_implied_volatility from optionsnapshot where load_date='2015-01-16' order by load_time")
@@ -34,6 +37,7 @@ library("devtools")
 install_github("ropensci/plotly")
 library(plotly)
 
+##fmk: password needs to get hashed through another function
 set_credentials_file("phoenixpei","xylj590nlr")
 py <- plotly()
 
@@ -43,7 +47,7 @@ response <- py$plotly(data,kwargs=list(filename="Anomalies Detection", fileopt="
 
 browseURL(response$url)
 
-
+##fmk: additional section needs to be created to store plot results into a postgres table
 
 
 
