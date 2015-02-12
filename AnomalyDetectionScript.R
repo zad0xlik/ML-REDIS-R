@@ -60,6 +60,7 @@ response <- py$plotly(data,kwargs=list(filename="Anomalies Detection", fileopt="
 browseURL(response$url)
 
 ##fmk: additional section needs to be created to store plot results into a postgres table
-##pp: work on refining result to make sure results are validate so that can be written into a postgresql table
+dbWriteTable(con, name = "anomalystream",dt)
+			
 
 
