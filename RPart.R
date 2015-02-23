@@ -10,21 +10,16 @@ library(xlsx)
 
 setwd("/Professional/CODES")
 mydata <- read.xlsx("Workbook.xlsx", 1) # change tabs
-##mydata <- mydata[1:40,]
+mydata <- mydata[1:40,]
 
 attach(mydata)
 
-## Split data into testing and training using
-set.seed(1234)
-train <- sample(2, nrow(mydata), replace=TRUE, prob=c(0.7, 0.3))
+rpart_model <- rpart(qty ~., data=mydata, method="class",control=rpart.control(minsplit=20, cp=0))
+par(mfrow = c(1,2), xpd = TRUE)
 
-test <- -train
-training_data <- mydata[train,]
-testing_data <- mydata[test,]
-
-rpart_model <- rpart(qty ~., data=training_data, method="class",control=rpart.control(minsplit=20, cp=0))
-attributes(rpart_model)
+##attributes(rpart_model)
 print(rpart_model)
+##plot(rpart_model, uniform=T)
 fancyRpartPlot(rpart_model, uniform=TRUE, main="Classification Tree for Optionsnapshot")
 text(rpart_model, use.n=TRUE, all=TRUE, cex=.8)
 
