@@ -57,10 +57,11 @@ rpart_model1 <- rpart(oi ~ strike + dte + volume, data = mydata, control = rpart
 summary(rpart_model1) # detailed summary of splits
 
 rpt <- printcp(rpart_model1)
+rpt_data <- as.data.frame(rpt)
 
 fancyRpartPlot(rpart_model1, uniform=TRUE, main="Classification Tree for Optionsnapshot")
 text(rpart_model1, use.n=TRUE, all=TRUE, cex=.6)
-dbWriteTable(con, "regressiontree", rpt, append=T, row.names=F)
+dbWriteTable(con, "regressiontree", rpt_data, overwrite=T)
 dbDisconnect(con)
 
 ##############################################################################################################
