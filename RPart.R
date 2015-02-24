@@ -4,7 +4,11 @@
 ##install.packages('xlsx')
 ##install.packages('party')
 ##install.packages('randomForest')
+install.packages ("RPostgreSQL")
+install.packages ("DBI")
 
+library (RPostgreSQL)
+library (DBI) # These first two packages are for building connection with PostgreSQL
 library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
@@ -31,10 +35,15 @@ library(randomForest) # readme - rfNews()
 # text(rpart_model, use.n=TRUE, all=TRUE, cex=.8)
 # 
 # detach(mydata)
-=======
-setwd("C:/Users/fkolyadin/Desktop/r_anomaly_detect")
+
+drv = dbDriver("PostgreSQL")
+hashed1 <- scrypt::hashPassword("Ready2go")
+scrypt::verifyPassword(hashed1, "Ready2go")
+con = dbConnect(drv, user = "ppei", password = "Ready2go", dbname = "QTRACK", host = "50.168.76.47", port = 5432)
+
+setwd("/Professional/CODES/r_anomaly_detect")
 mydata <- read.xlsx("tree_1.xlsx", 1) # change tabs
-mydata <- mydata[1:46,]
+##mydata <- mydata[1:46,]
 
 attach(mydata)
 
@@ -47,13 +56,13 @@ rpart_model1 <- rpart(oi ~ strike + dte + volume, data = mydata, control = rpart
 ##plotcp(rpart_model1) # visualize cross-validation resultss
 summary(rpart_model1) # detailed summary of splits
 
-##par(mfrow = c(1,2), xpd = TRUE)
-
-##attributes
-print(rpart_model1)
+rpt <- printcp(rpart_model1)
 
 fancyRpartPlot(rpart_model1, uniform=TRUE, main="Classification Tree for Optionsnapshot")
-text(rpart_model1, use.n=TRUE, all=TRUE, cex=.8)
+text(rpart_model1, use.n=TRUE, all=TRUE, cex=.6)
+dbWriteTable(con, "regressiontree", rpt, append=T, row.names=F)
+dbDisconnect(con)
+
 ##############################################################################################################
 
 ##############################################################################################################
@@ -61,10 +70,12 @@ text(rpart_model1, use.n=TRUE, all=TRUE, cex=.8)
 ##############################################################################################################
 
 ##ppei to fix
-ctree_model2 <- ctree(oi ~ strike + dte + volume, data = mydata)
+ctree_model2 <- ctree(oi ~ strike + dte + volume, data = mydata, ctree_control(maxsurrogate = 3))
+summary(ctree_model2)
 
 plot(ctree_model2, main="Conditional Inference Tree")
 text(ctree_model2, use.n=TRUE, all=TRUE, cex=.8)
+table(predict(ctree_model2), strike)
 
 
 ##############################################################################################################
