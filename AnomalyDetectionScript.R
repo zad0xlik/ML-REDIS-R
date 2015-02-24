@@ -1,4 +1,3 @@
-
 ##################################################################
 ##project name:Hydra R Anomaly Detection
 ##modified by:Phoenix Pei
@@ -36,8 +35,8 @@ con = dbConnect(drv, user = "ppei", password = "Ready2go", dbname = "QTRACK", ho
 rs <- dbGetQuery (con, "select (load_date || ' ' || load_time)::timestamp, call_implied_volatility from optionsnapshot where load_date='2015-01-16' order by cast(load_time as time)")
 
 dt <- as.data.frame(rs)
-AnomalyDetectionVec(dt[,2], max_anoms=0.2, period=7, direction='both', only_last=FALSE, plot=TRUE)
-
+model <- AnomalyDetectionVec(dt[,2], max_anoms=0.2, period=7, direction='both', only_last=FALSE, plot=TRUE)
+md <- print(model)
 
 #####
 
@@ -59,7 +58,7 @@ response <- py$plotly(data,kwargs=list(filename="Anomalies Detection", fileopt="
 browseURL(response$url)
 
 ##fmk: additional section needs to be created to store plot results into a postgres table
-dbWriteTable(con, name = "anomalystream",dt)
+dbWriteTable(con, name = "anomalystream", md)
 
 con = dbConnect(drv, user = "ppei", password = "Ready2go", dbname = "QTRACK", host = "50.168.76.47", port = 5432)
 rs <- dbGetQuery (con, "select (load_date || ' ' || load_time)::timestamp, call_implied_volatility from optionsnapshot where load_date='2015-01-16' order by cast(load_time as time)")
@@ -92,5 +91,5 @@ browseURL(response$url)
 
 ##fmk: additional section needs to be created to store plot results into a postgres table
 dbWriteTable(con, name = "anomalystream",dt)
-			
+dbDisconnect(con)			
 
