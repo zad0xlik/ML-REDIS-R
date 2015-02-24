@@ -105,4 +105,4 @@ detach(mydata)
 ##conventional way of plotting
 ##plot(rpart_model, uniform=TRUE, main="name of graph")
 ##text(rpart_model, use.n=TRUE, all=TRUE, cex=.8)
->>>>>>> d1e5c037a0fd370dc2b7ac30dfd1bd4433d6fb4a
+##>>>>>>> d1e5c037a0fd370dc2b7ac30dfd1bd4433d6fb4a
