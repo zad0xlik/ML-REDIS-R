@@ -4,8 +4,9 @@
 ##install.packages('xlsx')
 ##install.packages('party')
 ##install.packages('randomForest')
-install.packages ("RPostgreSQL")
-install.packages ("DBI")
+##install.packages("RPostgreSQL")
+##install.packages("DBI")
+##install.packages("scrypt")
 
 library (RPostgreSQL)
 library (DBI) # These first two packages are for building connection with PostgreSQL
@@ -37,13 +38,14 @@ library(randomForest) # readme - rfNews()
 # detach(mydata)
 
 drv = dbDriver("PostgreSQL")
-hashed1 <- scrypt::hashPassword("Ready2go")
-scrypt::verifyPassword(hashed1, "Ready2go")
-con = dbConnect(drv, user = "ppei", password = "Ready2go", dbname = "QTRACK", host = "50.168.76.47", port = 5432)
+hashed1 <- scrypt::hashPassword("otsosika")
+scrypt::verifyPassword(hashed1, "otsosika")
+con = dbConnect(drv, user = "postgres", password = "otsosika", dbname = "QTRACK", host = "76.100.253.70", port = 5432)
 
-setwd("/Professional/CODES/r_anomaly_detect")
+# setwd("/Professional/CODES/r_anomaly_detect")
+setwd("C:/QTRACK/PROGRAMS/r_anomaly_detect")
 mydata <- read.xlsx("tree_1.xlsx", 1) # change tabs
-##mydata <- mydata[1:46,]
+mydata <- mydata[1:46,]
 
 attach(mydata)
 
@@ -55,6 +57,8 @@ rpart_model1 <- rpart(oi ~ strike + dte + volume, data = mydata, control = rpart
 ##printcp(rpart_model) # display the results 
 ##plotcp(rpart_model1) # visualize cross-validation resultss
 summary(rpart_model1) # detailed summary of splits
+
+rpart_model1
 
 rpt <- printcp(rpart_model1)
 rpt_data <- as.data.frame(rpt)
