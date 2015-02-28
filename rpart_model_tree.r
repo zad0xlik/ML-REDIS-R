@@ -2,7 +2,6 @@
 ##Make sure to install all packages prior running script
 ##############################################################################################################
 
-
 install.packages('rattle')
 install.packages('rpart.plot')
 install.packages('RColorBrewer')
@@ -19,7 +18,7 @@ install.packages("partykit")
 install.packages("rlist")
 install.packages("pipeR")
 install.packages("data.table")
-
+install.packages("jsonlite")
 devtools::install_github("timelyportfolio/networkD3@feature/d3.chart.layout")
 
 library(RPostgreSQL)
@@ -32,11 +31,12 @@ library(party)
 library(partykit)
 library(strucchange) # For the sctest function to extract p-values (see help for ctree and sctest)
 library(randomForest) # readme - rfNews()
-library(htmltools) 
+library(htmltools)
 library(rlist)
 library(pipeR)
 library(data.table)
 library(networkD3)
+library(jsonlite)
 
 drv = dbDriver("PostgreSQL") # Driver to connect to PostgreSQL
 # hashed1 <- scrypt::hashPassword("otsosika")
@@ -51,7 +51,7 @@ mydata <- dbGetQuery (
       , call_open_interest as oi
       , load_time
 from optionsnapshot
-where load_date = (current_date-1) and load_time = (select max(load_time) from optionsnapshot)
+where load_date = (current_date-2) and load_time = (select max(load_time) from optionsnapshot)
 order by strike_price asc") # query data from sql and store in mydata
 
 
@@ -90,6 +90,21 @@ rpk.text$description <- sapply(strsplit(rpk.text[,2], ":"), "[", 1)
 
 dat = rapply(rpk$node,unclass,how="replace")
 
+# Write tree result to database
+ScriptName = c("rpart_model_tree")
+Date = c(Sys.Date())
+TreeResult = c(rpk.text)
+table = data.frame(ScriptName, Date, TreeResult)
+dbWriteTable(con, name="tree_results", table, overwrite = T)
+
+# Write JSON result to database
+ScriptName = c("rpart_model_tree")
+Date = c(Sys.Date())
+JSONResult = str_c(dat)
+table = data.frame(ScriptName, Date, JSONResult)
+dbWriteTable(con, name="json_results", table, overwite = T)
+
+
 #fill in information at the root level for now
 #that might be nice to provide to our interactive graph
 dat$info = rapply(
@@ -98,7 +113,7 @@ dat$info = rapply(
     l = unclass(l)
     if( class(l) %in% c("terms","formula","call")) {
       l = paste0(as.character(l)[-1],collapse=as.character(l)[1])
-    }          
+    }
     attributes(l) <- NULL
     return(l)
   }
@@ -122,7 +137,7 @@ dat = gsub ( x=dat, pattern = '"id":([0-9]*)', replacement = '"name":"node\\1","
 dat = sub (x = dat, pattern = "node1", replacement = "root")
 
 # replacing the node names from node1, node2, etc., with the extracted node names and metadata from
-# rpk.text, and rp$table. 
+# rpk.text, and rp$table.
 for (i in 2:nrow(rpk.text)) {
   dat = sub (
     x = dat
@@ -135,7 +150,7 @@ for (i in 2:nrow(rpk.text)) {
     )
     , fixed = T
   )
-  
+
   dat = sub (
     x = dat
     , pattern = paste("nodesize", i, sep = "")
@@ -168,7 +183,7 @@ lapply(
   )
   ,function(chartType){
     hN$x$options$type = chartType
-    return(hN) 
+    return(hN)
   }
 )
 
