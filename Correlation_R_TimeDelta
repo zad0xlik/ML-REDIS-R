@@ -1,0 +1,14 @@
+mydata <- read.csv("/Users/abcao/Documents/option.csv",header = T,sep = ";") # change tabs
+#mydata <- mydata[1:500,]
+head(mydata)
+mydata$time <- seq(1:dim(mydata)[1])
+
+cor.test(mydata$time,mydata$avg,method = "pearson")
+#fit straight line
+plot(mydata$time,mydata$avg, cex = 0.1, ylab = "AVG", xlab = "Time order")
+abline(lm(mydata$avg~mydata$time), col = "red", lwd=4)
+
+#fit curve line
+lo <- loess(mydata$avg~mydata$time)
+plot(mydata$time,mydata$avg, cex = 0.1, ylab = "AVG", xlab = "Time order")
+lines(predict(lo), col='red', lwd=4)
