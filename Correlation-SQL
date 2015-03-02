@@ -1,0 +1,4 @@
+select rtrim(ltrim(load_time)), 
+load_date,
+avg(call_delta) 
+from optionsnapshot where load_date between'2015-02-23' and '2015-02-26' group by load_date, load_time
