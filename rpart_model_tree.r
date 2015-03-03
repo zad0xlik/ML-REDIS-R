@@ -51,7 +51,7 @@ mydata <- dbGetQuery (
       , call_open_interest as oi
       , load_time
 from optionsnapshot
-where load_date = (current_date-2) and load_time = (select max(load_time) from optionsnapshot)
+where load_date = current_date and load_time = (select max(load_time) from optionsnapshot)
 order by strike_price asc") # query data from sql and store in mydata
 
 
@@ -89,21 +89,6 @@ rpk.text$yval <- round(rpk.text$yval, 2)
 rpk.text$description <- sapply(strsplit(rpk.text[,2], ":"), "[", 1)
 
 dat = rapply(rpk$node,unclass,how="replace")
-
-# Write tree result to database
-ScriptName = c("rpart_model_tree")
-Date = c(Sys.Date())
-TreeResult = c(rpk.text)
-table = data.frame(ScriptName, Date, TreeResult)
-dbWriteTable(con, name="tree_results", table, overwrite = T)
-
-# Write JSON result to database
-ScriptName = c("rpart_model_tree")
-Date = c(Sys.Date())
-JSONResult = str_c(dat)
-table = data.frame(ScriptName, Date, JSONResult)
-dbWriteTable(con, name="json_results", table, overwite = T)
-
 
 #fill in information at the root level for now
 #that might be nice to provide to our interactive graph
@@ -186,6 +171,23 @@ lapply(
     return(hN)
   }
 )
+
+# Write tree result to database
+ScriptName = c("rpart_model_tree")
+Date = c(Sys.Date())
+TreeResult = c(rpk.text)
+table = data.frame(ScriptName, Date, TreeResult)
+dbWriteTable(con, name="tree_results", table, append = T)
+
+# Write JSON result to database
+# increment current id in the table by 1
+id <- dbGetQuery(
+  con, "select max(id) from tree_json")+1
+
+sql <- paste("INSERT INTO tree_json(id, scriptname, date, jsonresult)
+              VALUES ('",id,"', 'rpart_model_tree','now()','",dat,"')")
+# do not use wrapper -- use SQL!
+dbGetQuery(con, sql)
 
 ##############################################################################################################
 ##############################################################################################################
