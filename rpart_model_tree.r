@@ -44,15 +44,17 @@ drv = dbDriver("PostgreSQL") # Driver to connect to PostgreSQL
 con = dbConnect(drv, user = "postgres", password = "otsosika", dbname = "QTRACK", host = "76.100.253.70", port = 5432) # Connection variable to build the connection to Pgres
 mydata <- dbGetQuery (
           con,
-          "select  'BCS' as call_option_symbol
-      , strike_price as strike
-      , days_to_expiration as dte
-      , call_volume as volume
-      , call_open_interest as oi
-      , load_time
-from optionsnapshot
-where load_date = current_date and load_time = (select max(load_time) from optionsnapshot)
-order by strike_price asc") # query data from sql and store in mydata
+          "select
+          'BCS' as call_option_symbol
+          , strike_price as strike
+          , days_to_expiration as dte
+          , call_volume as volume
+          , call_open_interest as oi
+          , load_time
+          from optionsnapshot
+          where load_time = (select max(load_time) from optionsnapshot where load_date= current_date)
+          order by strike_price asc
+          ") # query data from sql and store in mydata
 
 
 ##############################################################################################################
