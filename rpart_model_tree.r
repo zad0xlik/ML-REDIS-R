@@ -1,25 +1,25 @@
 ##############################################################################################################
 ##Make sure to install all packages prior running script
 ##############################################################################################################
-
-install.packages('rattle')
-install.packages('rpart.plot')
-install.packages('RColorBrewer')
-install.packages('xlsx')
-install.packages('party')
-install.packages('randomForest')
-install.packages("RPostgreSQL")
-install.packages("DBI")
-install.packages("scrypt")
-
-install.packages("networkD3")
-install.packages("devtools")
-install.packages("partykit")
-install.packages("rlist")
-install.packages("pipeR")
-install.packages("data.table")
-install.packages("jsonlite")
-devtools::install_github("timelyportfolio/networkD3@feature/d3.chart.layout")
+# install.packages('rattle')
+# install.packages('rpart.plot')
+# install.packages('RColorBrewer')
+# install.packages('xlsx')
+# install.packages('party')
+# install.packages('randomForest')
+# install.packages("RPostgreSQL")
+# install.packages("DBI")
+# install.packages("scrypt")
+# 
+# install.packages("networkD3")
+# install.packages("devtools")
+# install.packages("partykit")
+# install.packages("rlist")
+# install.packages("pipeR")
+# install.packages("data.table")
+# install.packages("jsonlite")
+# devtools::install_github("timelyportfolio/networkD3@feature/d3.chart.layout")
+##############################################################################################################
 
 library(RPostgreSQL)
 library(DBI) # These first two packages are for building connection with PostgreSQL
@@ -167,6 +167,8 @@ lapply(
     ,"partition.rectangle"
     ,"treemap"
     ,"tree.cartesian"
+    ,"cluster.radial"
+    ,"tree.cartesian"    
   )
   ,function(chartType){
     hN$x$options$type = chartType
