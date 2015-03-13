@@ -1,3 +1,5 @@
+//lets create an API to twitter now and connect to their data streamer
+
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.twitter._
 import org.apache.spark.storage.StorageLevel
