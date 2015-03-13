@@ -48,3 +48,45 @@ twt.map(status=>
 twt.print
 
 ssc.start()
+
+
+//let's run sql commands on streaming data:
+%sql select * from tweets where text like '%girl%' limit 10
+
+//this is like yoda on stereoids
+//let's do a streaming time series 
+%sql select createdAt, count(1) from tweets group by createdAt order by createdAt
+
+
+//You can make user-defined function and use it in Spark SQL. Let's try it by making function named sentiment.
+//This function will return one of the three attitudes(positive, negative, neutral) towards the parameter.
+
+def sentiment(s:String) : String = {
+    val positive = Array("like", "love", "good", "great", "happy", "cool", "the", "one", "that")
+    val negative = Array("hate", "bad", "stupid", "is")
+
+    var st = 0;
+
+    val words = s.split(" ")    
+    positive.foreach(p =>
+        words.foreach(w =>
+            if(p==w) st = st+1
+        )
+    )
+
+    negative.foreach(p=>
+        words.foreach(w=>
+            if(p==w) st = st-1
+        )
+    )
+    if(st>0)
+        "positivie"
+    else if(st<0)
+        "negative"
+    else
+        "neutral"
+}
+sqlc.registerFunction("sentiment", sentiment _)
+
+//let's graph the data
+%sql select sentiment(text), count(1) from tweets where text like '%girl%' group by sentiment(text)
