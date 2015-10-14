@@ -1,4 +1,4 @@
-mydata <- read.csv("/Users/abcao/Documents/option.csv",header = T,sep = ";") # change tabs
+mydata <- read.csv("/xxx/option.csv",header = T,sep = ";") # change tabs
 #mydata <- mydata[1:500,]
 head(mydata)
 mydata$time <- seq(1:dim(mydata)[1])

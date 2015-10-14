@@ -39,9 +39,9 @@ library(data.table)
 library(networkD3)
 
 drv = dbDriver("PostgreSQL") # Driver to connect to PostgreSQL
-# hashed1 <- scrypt::hashPassword("otsosika")
-# scrypt::verifyPassword(hashed1, "otsosika")
-con = dbConnect(drv, user = "postgres", password = "otsosika", dbname = "QTRACK", host = "76.100.253.70", port = 5432) # Connection variable to build the connection to Pgres
+# hashed1 <- scrypt::hashPassword("xxx")
+# scrypt::verifyPassword(hashed1, "xxx")
+con = dbConnect(drv, user = "xxx", password = "xxx", dbname = "QTRACK", host = "xxx", port = 5432) # Connection variable to build the connection to Pgres
 mydata <- dbGetQuery (
           con,
           "select  'BCS' as call_option_symbol

@@ -38,9 +38,9 @@ library(randomForest) # readme - rfNews()
 # detach(mydata)
 
 drv = dbDriver("PostgreSQL")
-hashed1 <- scrypt::hashPassword("otsosika")
-scrypt::verifyPassword(hashed1, "otsosika")
-con = dbConnect(drv, user = "postgres", password = "otsosika", dbname = "QTRACK", host = "76.100.253.70", port = 5432)
+hashed1 <- scrypt::hashPassword("xxx")
+scrypt::verifyPassword(hashed1, "xxx")
+con = dbConnect(drv, user = "xxx", password = "xxx", dbname = "QTRACK", host = "xxx", port = 5432)
 
 # setwd("/Professional/CODES/r_anomaly_detect")
 setwd("C:/QTRACK/PROGRAMS/r_anomaly_detect")
